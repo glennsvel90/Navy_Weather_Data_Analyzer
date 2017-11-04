@@ -44,7 +44,7 @@ class NavyWApp:
         #                    'Jun', 'Jul', 'Aug,', 'Sep', 'Oct','Nov', 'Dec')
 
         self.smonth = StringVar()
-        self.smspinbox = Spinbox(self.framebody, textvariable = self.smonth, width = 3,
+        self.smspinbox = Spinbox(self.framebody, textvariable = self.smonth, width = 4,
                                  font = 'Helvetica 11')
         self.smspinbox.grid(row = 1, column = 0, padx=(15, 0))
 
@@ -74,7 +74,7 @@ class NavyWApp:
 
 
         self.emonth = StringVar()
-        self.emspinbox = Spinbox(self.framebody, textvariable = self.emonth, width= 3,
+        self.emspinbox = Spinbox(self.framebody, textvariable = self.emonth, width= 4,
                                  font = 'Helvetica 11')
         self.emspinbox.grid(row = 1, column = 4, padx=(30, 0))
         self.emspinbox.config(values = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -104,7 +104,43 @@ class NavyWApp:
 
         ttk.Button(master, text = "Submit", command = self.submit).pack(pady = (5,5))
 
-        self.frameresults = ttk.Frame(master)
+        self.frameresults = ttk.Frame(master, width=70, height=70)
+        self.frameresults.pack(padx=(10, 10), pady=(10,10))
+
+
+        fat = Frame(self.frameresults,width=66,height=50)
+        fat.grid(row=0,column=1,padx=(5,5),sticky="s")
+        fat.grid_propagate(0)
+        fat.update()
+        lat = Label(fat,text="Wind\nSpeed",font = 'Helvetica 12 bold')
+        lat.place(x=30, y=25, anchor="center")
+
+        fws = Frame(self.frameresults,width=115,height=50)
+        fws.grid(row=0,column=2,padx=(5,5), sticky="s")
+        fws.grid_propagate(0)
+        fws.update()
+        lws = Label(fws,text="Air\nTemperature", font = 'Helvetica 12 bold')
+        lws.place(x=55, y=25, anchor="center")
+
+        fbp = Frame(self.frameresults,width=100,height=50)
+        fbp.grid(row=0,column=3,padx=(5,5), sticky="s")
+        fbp.grid_propagate(0)
+        fbp.update()
+        lbp = Label(fbp,text="Barometric\nPressure", font = 'Helvetica 12 bold')
+        lbp.place(x=50, y=25, anchor="center")
+
+
+        #
+        # ttk.Label(self.frameresults, text='Air\nTemperature', justify= CENTER, borderwidth=2, width=12,
+        #           relief="groove").grid(row=0, column=1, sticky='s',padx=(0, 15))
+        # ttk.Label(self.frameresults, text='Wind\nSpeed', justify= CENTER, borderwidth=2, relief="groove").grid(row=0, column=2, sticky='s', padx=(0, 15))
+        # ttk.Label(self.frameresults, text='Barometric\nPressure',justify= CENTER, borderwidth=2, relief="groove").grid(row=0, column=3,
+        #                                                                                padx=(0, 15), sticky='s')
+        ttk.Label(self.frameresults, text='Mean:').grid(row=1, column=0, sticky='e')
+        ttk.Label(self.frameresults, text='Median:').grid(row=2, column=0, sticky='e')
+
+
+
 
 
 
