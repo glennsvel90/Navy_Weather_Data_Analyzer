@@ -58,8 +58,8 @@ class NavyWApp:
 
         self.sdaynum = StringVar()
         self.sdspinbox = Spinbox(self.framebody, from_= 1, to = 31,
-                               textvariable = self.sdaynum, width= 2,
-                               font = 'Helvetica 11')
+                                 textvariable = self.sdaynum, width= 2,
+                                 font = 'Helvetica 11')
         self.sdspinbox.grid(row = 1, column = 1)
         self.sdaynum.set(date.today().day)
 
@@ -67,7 +67,7 @@ class NavyWApp:
         self.syear = StringVar()
         self.sylimit = date.today().year
         self.syspinbox = Spinbox(self.framebody, from_= 2001, to = self.sylimit,
-                                textvariable = self.syear, width= 4, font = 'Helvetica 11')
+                                 textvariable = self.syear, width= 4, font = 'Helvetica 11')
         self.syspinbox.grid(row = 1, column = 2)
         self.syear.set(date.today().year)
 
@@ -85,7 +85,7 @@ class NavyWApp:
 
         self.edaynum = StringVar()
         self.edspinbox = Spinbox(self.framebody, from_= 1, to = 31, textvariable = self.edaynum,
-                               width= 2, font = 'Helvetica 11')
+                                 width= 2, font = 'Helvetica 11')
         self.edspinbox.grid(row = 1, column = 5)
         self.edaynum.set(date.today().day)
 
@@ -139,6 +139,21 @@ class NavyWApp:
         ttk.Label(self.frameresults, text='Mean:').grid(row=1, column=0, sticky='e')
         ttk.Label(self.frameresults, text='Median:').grid(row=2, column=0, sticky='e')
 
+        self.air_temp_mean = StringVar()
+        self.air_temp_median = StringVar()
+        self.barometric_press_mean = StringVar()
+        self.barometric_press_median = StringVar()
+        self.wind_speed_mean = StringVar()
+        self.wind_speed_median = StringVar()
+
+        ttk.Label(self.frameresults, textvariable = self.air_temp_mean).grid(row = 1, column =2)
+        ttk.Label(self.frameresults, textvariable = self.air_temp_median).grid(row = 2 , column =2)
+        ttk.Label(self.frameresults, textvariable = self.barometric_press_mean).grid(row = 1, column =3)
+        ttk.Label(self.frameresults, textvariable = self.barometric_press_median).grid(row = 2 , column =3)
+        ttk.Label(self.frameresults, textvariable = self.wind_speed_mean).grid(row = 1 , column =1)
+        ttk.Label(self.frameresults, textvariable = self.wind_speed_median).grid(row = 2 , column =1)
+
+
 
 
 
@@ -147,6 +162,9 @@ class NavyWApp:
 
     def submit(self):
         pass
+
+    def _safe_close(self):
+        """When the GUI is closed
 
 #CAC9FB
 def main():
