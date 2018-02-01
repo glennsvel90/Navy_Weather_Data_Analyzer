@@ -161,7 +161,40 @@ class NavyWApp:
 
 
     def submit(self):
-        pass
+        try:
+            start = date(int(self.syear.get()),
+                         self.months.index(self.smonth.get()) + 1,
+                                           int(self.sdaynum.get()))
+            end = date(int(self.eyear.get()),
+                       self.months.index(self.emonth.get())+1,
+                       int(self.edaynum.get()))
+        except ValueError as e:
+            messagebox.showerror(title='ValueError',
+                                 message=('Invalid Date:\n'
+                                          'Correct format is "month DD YYYY" '))
+            self.sdaynum.set(date.today().day)
+            self.smonth.set(self.months[date.today().month-1])
+            self.syear.set(date.today().year)
+            self.edaynum.set(date.today().day)
+            self.emonth.set(self.months[date.today().month-1])
+            self.eyear.set(date.today().year)
+            return
+        #check that date range is correct
+
+        if (start < date(2001, 1, 12)) or (end > date.today()) or (start > end):
+            messagebox.showerror(title = 'ValueError', message = ('INVALID DATE RANGE\nStart Date: {}\nEnd Date: {}\n'
+                                                                  'Dates must be between 2001-1-12 and {}.\n'
+                                                                  'Start Date must be <= End Date.').format(start, end, date.today()))
+            return
+
+        data = list(self.database.get_data_for_range(start, end))
+
+        if data != []:
+
+
+            dict_of_lists = dict(Air_Temp = [], Barometric_Press = [], Wind_Speed = [])
+
+            for entry in data:
 
     def _safe_close(self):
         """When the GUI is closed
