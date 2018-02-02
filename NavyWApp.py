@@ -3,12 +3,23 @@ from tkinter import ttk, messagebox
 from statistics import mean, median
 from datetime import date
 
-#import IpoDB
+import NavyWDB
 
 
 class NavyWApp:
+    """
+    This is a GUI module for the Navy Weather Data Application. The module retrieves data for
+    data ranges from the NavyWDB
+    """
 
     def __init__(self, master):
+
+        self.master = master
+        self._makeGUI()
+        self.database = NavyWDB.NavyWDB()
+        self.master.protocol("WM_DELETE_WINDOW", self._safe_close)
+
+    def _makeGUI(self):
 
         master.title('Navy Weather Data Analyzer')
         master.resizable(False, False)
@@ -155,11 +166,6 @@ class NavyWApp:
 
 
 
-
-
-
-
-
     def submit(self):
         try:
             start = date(int(self.syear.get()),
@@ -218,7 +224,10 @@ class NavyWApp:
 
 
     def _safe_close(self):
-        """When the GUI is closed
+        """When the GUI is closed, this is run to properly shut down the database before closing the GUI"""
+
+        self.database.close()
+        self.master.destory()
 
 #CAC9FB
 def main():
