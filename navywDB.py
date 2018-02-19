@@ -67,4 +67,26 @@ class NavyWDB():
                 error_dates.append(e)
 
         if error_dates != []:
-            error
+            error_message = "There were problems accessing data for the following dates. They were not included in the results.\n"
+            for day in error_dates:
+                error_message += '\n{}'.format(day)
+                messagebox.showwarning(title='Warning', message=error_message)
+
+        cursor = self.db.execute('''SELECT Air_Temp, Barometric_Press, Wind_Speed FROM {} WHERE Date BETWEEN {} AND {}'''.format(self.table,
+                                                                                                                                 start.strftime(%Y%m%d),
+                                                                                                                                end.strftime(%Y%m%d)))
+        for row in cursor:
+            yield dict(row)
+
+    def get_status_for_range(self, start, end):
+        """
+        Given a start and end date, return a generator of dicts containing the dates and their corresponding status value which
+        is entered as either COMPLETE or PARTIAL
+        """
+
+        cursor = self.db.execute('''SELECT DISTINCT Date, Status FROM {} WHERE Date BETWEEN {} AND {}'''.format(self.table,
+                                                                                                                start.strftime(%Y%m%d),
+                                                                                                                end.strftime(%Y%m%d)))
+
+        for row in cursor:
+            yield dict(row)
