@@ -90,3 +90,40 @@ class NavyWDB():
 
         for row in cursor:
             yield dict(row)
+
+    def _update_data_for_date(self, date, partial):
+        """
+        Uses NavyWWeb module to download data for dates not already in the DB. If partial data exists, then it is deleted and re-downloaded
+        completely
+        """
+        if partial:
+            self.db.execute('DELETE FROM {} WHERE DATE = {}'.format(self.table, date.strftime('%Y%m%d')))
+            self.db.commit()
+
+        try:
+            data = navywweb.get_data_for_date(date)
+            except
+                raise
+
+        for entry in data:
+            self.db.execute('''INSERT INTO {} (Date, Time, Status, Air_Temp, Barometric_Press, Wind_Speed) VALUES (?,?,?,?,?,?)'''.format(self.table),
+                                                                                                                                    (entry['Date'].replace("_", ""),
+                                                                                                                                    entry['Time'],
+                                                                                                                                    entry['Status'],
+                                                                                                                                    entry['Air_Temp']
+                                                                                                                                    entry['Barometric_Press'],
+                                                                                                                                    entry['Wind_Speed']))
+        self.db.commit()
+
+
+    def clear(self):
+        """Clears the database by dropping the current table"""
+        self.db.execute('DROP TABLE IF EXISTS {}'.format(self.table))
+
+
+    def close(self):
+        """
+        closes the database in a safe way
+        """
+        self.db.close()
+        del self.filename
