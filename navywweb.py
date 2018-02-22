@@ -11,7 +11,7 @@ def get_data_for_date(date):
         return _get_data_post2006(date)
 
 def _get_data_pre2007(date):
-    '''Returns a generator of dicts of weather data for each year. For years from 2002 to 2006,
+    '''Returns a generator of dicts of weather data for each year from 2002 to 2006,
     the data is contained in one file for each year'''
 
     url = '{}/Environmental_Data_{}/'.format(BASE_URL, date.year)
@@ -32,3 +32,15 @@ def _get_data_pre2007(date):
                    Air_Temp = elements[5],
                    Barometric_Press = elements[7],
                    Wind_Speed = elements[2])
+
+def _get_data_post2006(date):
+    '''Returns a generator of dicts of weather data for each year after
+    2006. Data is contained in sub-directories of years and then days.'''
+
+#for the following line, the datetime string rendered form has hypens between number
+#thus I convert those to underscores to process for the url
+    url = '{}/{}/{}'.format(BASE_URL, date.year, str(date).replace('-','_'))
+    data = dict(Air_Temp = [], Barometric_Press = [], Wind_Speed = [])
+
+    print('Fetching online data for {}'.format(date))
+    for key in data
