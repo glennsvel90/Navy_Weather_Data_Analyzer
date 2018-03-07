@@ -43,4 +43,24 @@ def _get_data_post2006(date):
     data = dict(Air_Temp = [], Barometric_Press = [], Wind_Speed = [])
 
     print('Fetching online data for {}'.format(date))
-    for key in data
+    for key in data.keys():
+        try:
+            data[key] = request.urlopen('{}{}'.format(url,key)).read().decode(encoding='utf_8').split('\n')
+        except:
+            raise ValueError(date)
+        else:
+            data[key].pop()
+
+    for i in range(len(data['Air_Temp'])):
+        timestamps = []
+        for k in data.keys():
+            timestamps.append(data[k][i].split()[1])
+        if timestamps[1:] != timestamps[:1]:
+            raise ValueError(date)
+
+        yield dict (Date = data['Air_Temp'][i].split()[0],
+                    Time = data['Air_Temp'][i].split()[1],
+                    Status = 'PARTIAL' if data == date.today() else 'COMPLETE',
+                    Air_Temp = data['Air_Temp'][i].split()[2],
+                    Barometric_Press = data['Barometric_Press'][i].split()[2],
+                    Wind_Speed = data['Wind_Speed'][i].split()[2])
