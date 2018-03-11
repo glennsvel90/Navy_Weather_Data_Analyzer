@@ -197,8 +197,9 @@ class NavyWApp:
                                                                   'Start Date must be <= End Date.').format(start, end, date.today()))
             return
         #retrieve weather data to calculate statistics, all by calling a method to return a generator object with a dictionary
-        #containing each of the 3 types of weather data for requested range of dates. The generator object is converted into a list
-        data = list(self.database.get_data_for_range3(start, end))
+        #containing each of the 3 types of weather data for requested range of dates. The generator object of dicts is converted
+        #into a list of dicts
+        data = list(self.database.get_data_for_range(start, end))
 
         #check if data was retrieved from the cached database
         if data != []:
@@ -206,11 +207,20 @@ class NavyWApp:
             #processing data
             dict_of_lists = dict(Air_Temp = [], Barometric_Press = [], Wind_Speed = [])
 
+
+            # for each dictionary entry in list "Data", concerning the key for the list of dicts, append to the right list according
+            #to the corresponding key, the value of the dictionary entry using the same spelt key names in the list "Data"
             for entry in data:
                 for key in dict_of_lists.keys():
                     dict_of_lists[key].append(entry[key])
 
             result = {}
+
+            # for --value of the results[key]--(value of a certain key in the results dictionary) make the value equal to the
+            # dictionary containing: 1)the mean equal to the mean calculated from the corresponding key's values(list of specific type
+            # of weather data results with each row a new date's data result for the corresponding key, 2) the median equal to the
+            # median calculated from the corresponding key's values (list of specific type of weather data results with each row a
+            # new date's data result for the corresponding key,
             for key in dict_of_lists.keys():
                 result[key] = dict(mean = mean(dict_of_lists[key]),
                                    median = median(dict_of_lists[key]))
@@ -224,6 +234,8 @@ class NavyWApp:
 
             self.frameresults.pack(side = TOP)
 
+        # hide the the resulting frame if data is not retreived yet, this prevents user from seeing left over results
+        # from a previous query and misinterpret them as valid results when actually no data was retreived
         else:
             self.frameresults.forget()
 
