@@ -15,5 +15,6 @@ This web application calculates and presents the mean and median of Navy weather
 
 Clone the repository and unzip the contents. Open your computer terminal and change directory to be located inside the repository.
 
-###GUI Preview
+### GUI Preview  
+  
 ![alt text](https://github.com/glennsvel90/Navy_Weather_Data_Analyzer/blob/master/GUI_preview.PNG "GUI Preview")
