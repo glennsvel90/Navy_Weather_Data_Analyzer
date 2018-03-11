@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk, messagebox
 from statistics import mean, median
 from datetime import date
-# import NavyWDB
+import NavyWDB
 
 
 class NavyWApp:
@@ -13,9 +13,16 @@ class NavyWApp:
 
     def __init__(self, master):
 
+        #store the tkinter top level window object as an internal variable called master
         self.master = master
+
+        #
         self._makeGUI()
-        # self.database = NavyWDB.NavyWDB()
+
+        #create and store a database object from the NavyWDB module
+        self.database = NavyWDB.NavyWDB()
+
+        #configures master to closing application event to safely close database before closing master window of gui
         self.master.protocol("WM_DELETE_WINDOW", self._safe_close)
 
     def _makeGUI(self):
@@ -33,7 +40,7 @@ class NavyWApp:
         self.style.configure('TLabel', background = '#CAC9FB', font=('Helvetica',12, 'bold'))
 
 
-
+        #creates gui header
         self.frameheader = ttk.Frame(self.master)
         self.frameheader.pack()
 
@@ -41,7 +48,7 @@ class NavyWApp:
 
         ttk.Label(self.frameheader, image = self.logo).grid(row = 0, column= 0, columnspan = 2)
 
-
+        #creates gui body where input controls and date boxes are placed
         self.framebody = ttk.Frame(self.master)
         self.framebody.pack()
 
@@ -49,23 +56,19 @@ class NavyWApp:
                                                             columnspan= 3, padx= (15, 0), sticky='sw')
 
 
-        self.months= ('Jan', 'Feb', 'Mar', 'Apr', 'May',
+        self.months = ('Jan', 'Feb', 'Mar', 'Apr', 'May',
                       'Jun', 'Jul', 'Aug,', 'Sep', 'Oct','Nov', 'Dec')
 
-
+        #store starting date month input values as string variables
         self.smonth = StringVar()
         self.smspinbox = Spinbox(self.framebody, textvariable = self.smonth, width = 4,
                                  font = 'Helvetica 11')
         self.smspinbox.grid(row = 1, column = 0, padx=(15, 0))
-
-
         self.smspinbox.config(values = (self.months))
-
         self.smonth.set(self.months[date.today().month-1])
 
 
-
-
+        #store starting date day imput values as string variables
         self.sdaynum = StringVar()
         self.sdspinbox = Spinbox(self.framebody, from_= 1, to = 31,
                                  textvariable = self.sdaynum, width= 2,
@@ -73,7 +76,7 @@ class NavyWApp:
         self.sdspinbox.grid(row = 1, column = 1)
         self.sdaynum.set(date.today().day)
 
-
+        #store starting date year input values as string variables
         self.syear = StringVar()
         self.sylimit = date.today().year
         self.syspinbox = Spinbox(self.framebody, from_= 2001, to = self.sylimit,
@@ -82,24 +85,23 @@ class NavyWApp:
         self.syear.set(date.today().year)
 
 
-
+        #store ending date month input values as string variables
         self.emonth = StringVar()
         self.emspinbox = Spinbox(self.framebody, textvariable = self.emonth, width= 4,
                                  font = 'Helvetica 11')
         self.emspinbox.grid(row = 1, column = 4, padx=(30, 0))
         self.emspinbox.config(values = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                                         'Jul', 'Aug,' 'Sep', 'Oct', 'Dec'))
-
         self.emonth.set(self.months[date.today().month-1])
 
-
+        #store ending date day input values as string variables
         self.edaynum = StringVar()
         self.edspinbox = Spinbox(self.framebody, from_= 1, to = 31, textvariable = self.edaynum,
                                  width= 2, font = 'Helvetica 11')
         self.edspinbox.grid(row = 1, column = 5)
         self.edaynum.set(date.today().day)
 
-
+        #store ending date year input values as string variables
         self.eyear = StringVar()
         self.eylimit = date.today().year
         self.espinbox = Spinbox(self.framebody, from_= 2001, to = self.eylimit,
@@ -111,13 +113,13 @@ class NavyWApp:
 
         ttk.Label(self.framebody, text= 'End Date:').grid(row=0, column=4, columnspan= 3, padx= (30, 0), sticky='sw')
 
-
+        #create the submit button to call the submit function
         ttk.Button(self.master, text = "Submit", command = self.submit).pack(pady = (5,5))
 
         self.frameresults = ttk.Frame(self.master, width=70, height=70)
         self.frameresults.pack(padx=(10, 10), pady=(10,10))
 
-
+        #create a frame to populate the resulting mean, median, mode weather data
         fat = Frame(self.frameresults,width=66,height=50)
         fat.grid(row=0,column=1,padx=(5,5),sticky="s")
         fat.grid_propagate(0)
@@ -161,7 +163,12 @@ class NavyWApp:
 
 
     def submit(self):
+        """
 
+        """
+        #try to get the day, month, and year, converting those into a datetime object.
+        #throw and error if actual real dates are not used as inputs, and reset the date values to
+        #day of today
         try:
             start = date(int(self.syear.get()),
                          self.months.index(self.smonth.get()) + 1,
@@ -169,6 +176,7 @@ class NavyWApp:
             end = date(int(self.eyear.get()),
                        self.months.index(self.emonth.get())+1,
                        int(self.edaynum.get()))
+
         except ValueError as e:
             messagebox.showerror(title='ValueError',
                                  message=('Invalid Date:\n'
@@ -180,19 +188,22 @@ class NavyWApp:
             self.emonth.set(self.months[date.today().month-1])
             self.eyear.set(date.today().year)
             return
-        #check that date range is correct
 
+
+        #check that date range is correct
         if (start < date(2001, 1, 12)) or (end > date.today()) or (start > end):
             messagebox.showerror(title = 'ValueError', message = ('INVALID DATE RANGE\nStart Date: {}\nEnd Date: {}\n'
                                                                   'Dates must be between 2001-1-12 and {}.\n'
                                                                   'Start Date must be <= End Date.').format(start, end, date.today()))
             return
+        #retrieve weather data to calculate statistics, all by calling a method to return a generator object with a dictionary
+        #containing each of the 3 types of weather data for requested range of dates. The generator object is converted into a list
+        data = list(self.database.get_data_for_range3(start, end))
 
-        data = list(self.database.get_data_for_range(start, end))
-
+        #check if data was retrieved from the cached database
         if data != []:
 
-
+            #processing data
             dict_of_lists = dict(Air_Temp = [], Barometric_Press = [], Wind_Speed = [])
 
             for entry in data:
