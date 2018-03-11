@@ -2,27 +2,30 @@ from tkinter import *
 from tkinter import ttk, messagebox
 from statistics import mean, median
 from datetime import date
-import NavyWDB
+# import NavyWDB
 
 
 class NavyWApp:
     """
     This is a GUI module for the Navy Weather Data Application. The module retrieves data for
-    data ranges from the NavyWDB
+    requested date ranges from the NavyWDB module
     """
 
     def __init__(self, master):
 
         self.master = master
         self._makeGUI()
-        self.database = NavyWDB.NavyWDB()
+        # self.database = NavyWDB.NavyWDB()
         self.master.protocol("WM_DELETE_WINDOW", self._safe_close)
 
     def _makeGUI(self):
+        """
+        Initiates the graphical user interface that displays date input parameters
+        """
 
-        master.title('Navy Weather Data Analyzer')
-        master.resizable(False, False)
-        master.configure(background = '#CAC9FB')
+        self.master.title('Navy Weather Data Analyzer')
+        self.master.resizable(False, False)
+        self.master.configure(background = '#CAC9FB')
 
         self.style = ttk.Style()
         self.style.configure('TFrame', background = '#CAC9FB')
@@ -31,7 +34,7 @@ class NavyWApp:
 
 
 
-        self.frameheader = ttk.Frame(master)
+        self.frameheader = ttk.Frame(self.master)
         self.frameheader.pack()
 
         self.logo = PhotoImage(file ='/home/userlin/Dropbox/dropubun/Navy_Weather_Data_Analyzer/lpo_logo.gif')
@@ -39,19 +42,16 @@ class NavyWApp:
         ttk.Label(self.frameheader, image = self.logo).grid(row = 0, column= 0, columnspan = 2)
 
 
-        self.framebody = ttk.Frame(master)
+        self.framebody = ttk.Frame(self.master)
         self.framebody.pack()
 
         ttk.Label(self.framebody, text= 'Start Date:').grid(row=0, column=0,
                                                             columnspan= 3, padx= (15, 0), sticky='sw')
-        # self.cmonths= cycle(Jan, Feb, Mar, Apr, May,
-        #              Jun, Jul, Aug, Sep, Oct,Nov, Dec)
+
 
         self.months= ('Jan', 'Feb', 'Mar', 'Apr', 'May',
                       'Jun', 'Jul', 'Aug,', 'Sep', 'Oct','Nov', 'Dec')
 
-        # self.months= ('Jan', 'Feb', 'Mar', 'Apr', 'May',
-        #                    'Jun', 'Jul', 'Aug,', 'Sep', 'Oct','Nov', 'Dec')
 
         self.smonth = StringVar()
         self.smspinbox = Spinbox(self.framebody, textvariable = self.smonth, width = 4,
@@ -60,7 +60,7 @@ class NavyWApp:
 
 
         self.smspinbox.config(values = (self.months))
-        # self.smspinbox.config(values = self.months)
+
         self.smonth.set(self.months[date.today().month-1])
 
 
@@ -112,9 +112,9 @@ class NavyWApp:
         ttk.Label(self.framebody, text= 'End Date:').grid(row=0, column=4, columnspan= 3, padx= (30, 0), sticky='sw')
 
 
-        ttk.Button(master, text = "Submit", command = self.submit).pack(pady = (5,5))
+        ttk.Button(self.master, text = "Submit", command = self.submit).pack(pady = (5,5))
 
-        self.frameresults = ttk.Frame(master, width=70, height=70)
+        self.frameresults = ttk.Frame(self.master, width=70, height=70)
         self.frameresults.pack(padx=(10, 10), pady=(10,10))
 
 
@@ -140,12 +140,7 @@ class NavyWApp:
         lbp.place(x=50, y=25, anchor="center")
 
 
-        #
-        # ttk.Label(self.frameresults, text='Air\nTemperature', justify= CENTER, borderwidth=2, width=12,
-        #           relief="groove").grid(row=0, column=1, sticky='s',padx=(0, 15))
-        # ttk.Label(self.frameresults, text='Wind\nSpeed', justify= CENTER, borderwidth=2, relief="groove").grid(row=0, column=2, sticky='s', padx=(0, 15))
-        # ttk.Label(self.frameresults, text='Barometric\nPressure',justify= CENTER, borderwidth=2, relief="groove").grid(row=0, column=3,
-        #                                                                                padx=(0, 15), sticky='s')
+
         ttk.Label(self.frameresults, text='Mean:').grid(row=1, column=0, sticky='e')
         ttk.Label(self.frameresults, text='Median:').grid(row=2, column=0, sticky='e')
 
@@ -166,6 +161,7 @@ class NavyWApp:
 
 
     def submit(self):
+
         try:
             start = date(int(self.syear.get()),
                          self.months.index(self.smonth.get()) + 1,
