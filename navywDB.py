@@ -6,33 +6,39 @@ import NavyWWeb
 
 class NavyWDB():
     """
-    A database that stores weather data, such as Wind Speed, Barometric Pressure,
-    and Air Temperature
+    Creates and manages a database that stores local cache of all weather data that's been downloaded from the internet
     """
 
     def __init__(self, **kwargs):
         self.filename = kwargs.get('filename', 'navyw.db')
         self.table = kwargs.get('table', 'weather')
+
+        #open a database, or create a new one if none is found.Store the reference to the database in the class db variable
         self.db = sqlite3.connect(self.filename)
         self.db.row_factory = sqlite3.Row
+
+        # if table does not exist, will create a new table with the following columns
         self.db.execute("""CREATE TABLE IF NOT EXIST {} (Date TEXT, Time TEXT, Status Text, Air_Temp FLOAT,
                             Barometric Press FLOAT, Wind_Speed FLOAT""".format(self.table))
 
     def get_data_for_range(self, start, end):
         """
         Using the start and end dates, returns a generator of dictionaries that have all weather data, such as Wind Speed,
-        Barometric Pressure, and Wind Speed in those dates
+        Barometric Pressure, and Wind Speed in those dates. This funtion is called by the NavyWApp module
         """
 
+        # aim to obtain a list of dates that need updating in the database
         dates_to_update = []
 
-        #find pre-2007 dates to update and add to list
+        #find pre-2007 dates to update and add to list to be dates to be updated by if a year's data should be updated by
+        # checking if there is no data for a Jan 12 date in the given year in the database
+        #
 
         for year in range(start.year, 2007):
             if list(self._get_status_for_range(date(year,1,12), date(year,1,12))) == []:
                 dates_to_update.append(date(year,1,12))
 
-        #find post-2006 dates to update and add to list
+        #find post-2006 dates to update and add to list to be the dates to be updated by if
 
         if (end.year > 2006) and (start >= date(2007,1,1)):
             temp_start = start
@@ -41,14 +47,20 @@ class NavyWDB():
         else:
             temp_start = end
 
-        #obtains a list of dates between temp_start and end
+        #obtains a list of dates between -temp_start and end for dates post 2006
 
         delta = end - temp_start
         for d in range(delta.days +1):
             dates_to_update.append(temp_start + timedelta(days=d))
 
+        # convert the dictionary of dictionaries that comes out from using the "get status for range" function
+        # into a list of dictionaries of containing the key date and its value, and the
+        # key status and it's value
         statuses = list(self._get_status_for_range(temp_start, end))
 
+        # for each dictionary in statuses list, if the key of status is 'complete', remove the datetime object from the list. From the
+        # the reading of the database the statuses list created has a string form of the date. Convert that string form date into a datetime
+        # in order to specify the removal of the date time from "dates to update list"
         for entry in statuses:
             if entry['Status'] == 'COMPLETE':
                 dates_to_update.remove(datetime.strptime(str(entry['Date']), '%Y%m%d').date())
@@ -84,6 +96,8 @@ class NavyWDB():
         is entered as either COMPLETE or PARTIAL
         """
 
+        # from the multiple records of different timestamps for redunant dates between the start and end date, get one date results.
+        # Turn the dates python start and end datetime objects into string text form to be able to be added and be compatible with the database
         cursor = self.db.execute('''SELECT DISTINCT Date, Status FROM {} WHERE Date BETWEEN {} AND {}'''.format(self.table,
                                                                                                                 start.strftime(%Y%m%d),
                                                                                                                 end.strftime(%Y%m%d)))
@@ -123,7 +137,7 @@ class NavyWDB():
 
     def close(self):
         """
-        closes the database in a safe way
+        closes the database in a safe way and delete the filename reference to it
         """
         self.db.close()
         del self.filename
