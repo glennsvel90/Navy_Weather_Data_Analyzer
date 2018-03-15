@@ -8,7 +8,7 @@ The U.S. Navy uses weather data to make informed decisions about submarine train
 
 ### Prerequisites
 
-* Python 3.4 (Statistics Module is included in this version)
+* Python 3.4 or later  (Statistics Module is included in this version)
 
 
 ### Installing
@@ -36,4 +36,5 @@ will use the NavyWWEB module to download the weather data for that date from the
 
 ## Limitations
 
-The are some varying data for the same dates.
+The are some varying data for the same dates. When errors did occur for the downloading of certain dates, a warning message is shown with the specific dates that
+had problems being downloaded. These dates let the user know dates that was not incorporated in the databased and thus, not included in the final result.

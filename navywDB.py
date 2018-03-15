@@ -27,19 +27,16 @@ class NavyWDB():
         Barometric Pressure, and Wind Speed in those dates. This funtion is called by the NavyWApp module
         """
 
-        # aim to obtain a list of dates that need updating in the database
+
         dates_to_update = []
 
-        # find pre-2007 dates from the database to update and add to list of dates to be updated
+        # find pre-2007 dates and add to list of dates to be updated
         # by checking if there is no data for a Jan 12 date in that given year in the database
-        #
-
         for year in range(start.year, 2007):
             if list(self._get_status_for_range(date(year,1,12), date(year,1,12))) == []:
                 dates_to_update.append(date(year,1,12))
 
-        # before finding post-2006 dates from the database to update and add to list of dates to be updated
-        # first find a temporary start date either on or after jan 1 2007
+        # before finding post-2006 dates first find a temporary start date either on or after jan 1 2007
         if (end.year > 2006) and (start >= date(2007,1,1)):
             temp_start = start
         elif (end.year > 2006) and (start < date(2007,1,1)):
@@ -48,7 +45,6 @@ class NavyWDB():
             temp_start = end
 
         # obtains dates between temp_start and end for dates post 2006, then adds these dates to "dates to update" list
-
         delta = end - temp_start
         for d in range(delta.days +1):
             dates_to_update.append(temp_start + timedelta(days=d))
@@ -78,16 +74,18 @@ class NavyWDB():
         error_dates = []
         for day in dates_to_update:
             try:
+                # download weather data for the days
                 self._update_data_for_date(day, False)
+            # for any errors that occur for the downloading of certain dates, capture the error and present it as a warning message
             except ValueError as e:
                 error_dates.append(e)
-
         if error_dates != []:
             error_message = "There were problems accessing data for the following dates. They were not included in the results.\n"
             for day in error_dates:
                 error_message += '\n{}'.format(day)
                 messagebox.showwarning(title='Warning', message=error_message)
 
+        # finally obtain the weather data from the database and create a generator object of dictionary of dictionaries
         cursor = self.db.execute('''SELECT Air_Temp, Barometric_Press, Wind_Speed FROM {} WHERE Date BETWEEN {} AND {}'''.format(self.table,
                                                                                                                                  start.strftime(%Y%m%d),
                                                                                                                                 end.strftime(%Y%m%d)))
