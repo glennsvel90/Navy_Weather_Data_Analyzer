@@ -30,16 +30,16 @@ class NavyWDB():
         # aim to obtain a list of dates that need updating in the database
         dates_to_update = []
 
-        #find pre-2007 dates to update and add to list to be dates to be updated by if a year's data should be updated by
-        # checking if there is no data for a Jan 12 date in the given year in the database
+        # find pre-2007 dates from the database to update and add to list of dates to be updated
+        # by checking if there is no data for a Jan 12 date in that given year in the database
         #
 
         for year in range(start.year, 2007):
             if list(self._get_status_for_range(date(year,1,12), date(year,1,12))) == []:
                 dates_to_update.append(date(year,1,12))
 
-        #find post-2006 dates to update and add to list to be the dates to be updated by if
-
+        # before finding post-2006 dates from the database to update and add to list of dates to be updated
+        # first find a temporary start date either on or after jan 1 2007
         if (end.year > 2006) and (start >= date(2007,1,1)):
             temp_start = start
         elif (end.year > 2006) and (start < date(2007,1,1)):
@@ -47,25 +47,29 @@ class NavyWDB():
         else:
             temp_start = end
 
-        #obtains a list of dates between -temp_start and end for dates post 2006
+        # obtains dates between temp_start and end for dates post 2006, then adds these dates to "dates to update" list
 
         delta = end - temp_start
         for d in range(delta.days +1):
             dates_to_update.append(temp_start + timedelta(days=d))
 
         # convert the dictionary of dictionaries that comes out from using the "get status for range" function
-        # into a list of dictionaries of containing the key date and its value, and the
-        # key status and it's value
+        # into a list of dictionaries containing the key Date and its value, and the
+        # key Status and it's value
         statuses = list(self._get_status_for_range(temp_start, end))
 
-        # for each dictionary in statuses list, if the key of status is 'complete', remove the datetime object from the list. From the
-        # the reading of the database the statuses list created has a string form of the date. Convert that string form date into a datetime
-        # in order to specify the removal of the date time from "dates to update list"
+        # for each dictionary in the above statuses list, if the key of status is 'complete', remove the datetime object from the list of dates to be updated. From the
+        # the reading of the database when turned the python datetime date into a string from the "get status for range" function, the statuses list created has
+        # a string form of the date. Convert that string form date into a datetime in order to specify the removal of the date time from "dates to update list"
         for entry in statuses:
             if entry['Status'] == 'COMPLETE':
                 dates_to_update.remove(datetime.strptime(str(entry['Date']), '%Y%m%d').date())
+
+            # if status is partial, download more data for the partial date.
             elif entry['Status'] == 'PARTIAL':
                 try:
+                    # downloading of data is initiated through the "update data for date" function and it's inherent calling of navywweb module's "get data for
+                    # date" function
                     self._update_data_for_date(datetime.strptime(str(entry['Date']), '%Y%m%d').date(), True)
                 except:
                     raise
@@ -96,8 +100,8 @@ class NavyWDB():
         is entered as either COMPLETE or PARTIAL
         """
 
-        # from the multiple records of different timestamps for redunant dates between the start and end date, get one date results.
-        # Turn the dates python start and end datetime objects into string text form to be able to be added and be compatible with the database
+        # from the multiple records of different timestamps for redunant dates between the start and end date, get one date result.
+        # Turn the python dates datetime objects into string text form to be able to be added and be compatible with the database
         cursor = self.db.execute('''SELECT DISTINCT Date, Status FROM {} WHERE Date BETWEEN {} AND {}'''.format(self.table,
                                                                                                                 start.strftime(%Y%m%d),
                                                                                                                 end.strftime(%Y%m%d)))
@@ -110,11 +114,16 @@ class NavyWDB():
         Uses NavyWWeb module to download data for dates not already in the DB. If partial data exists, then it is deleted and re-downloaded
         completely
         """
+
+        # if partial data exist for that date, delete what is ever in the database for that specific date to avoid duplicate data. The date was initially a datetime
+        # object, so turn it into a string to be read by the database to delete it.
         if partial:
             self.db.execute('DELETE FROM {} WHERE DATE = {}'.format(self.table, date.strftime('%Y%m%d')))
             self.db.commit()
 
         try:
+            #return a generator of dictionaries for the six fields in the database using the navywweb module's get_data_for_date function, set the generator
+            # equal to data variable
             data = navywweb.get_data_for_date(date)
             except
                 raise

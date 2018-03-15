@@ -11,8 +11,8 @@ def get_data_for_date(date):
         return _get_data_post2006(date)
 
 def _get_data_pre2007(date):
-    '''Returns a generator of dicts of weather data for each year from 2002 to 2006,
-    the data is contained in one file for each year'''
+    '''Returns a generator of dicts of weather data scraped for each year from 2002 to 2006,
+    the data is obtained from one file for each year'''
 
     url = '{}/Environmental_Data_{}/'.format(BASE_URL, date.year)
     print('Fetching online data for {} (full year)'.format(date.year))
@@ -34,7 +34,7 @@ def _get_data_pre2007(date):
                    Wind_Speed = elements[2])
 
 def _get_data_post2006(date):
-    '''Returns a generator of dicts of weather data for each year after
+    '''Returns a generator of dicts of weather data scraped for each year after
     2006. Data is contained in sub-directories of years and then days.'''
 
 #for the following line, the datetime string rendered form has hypens between number
