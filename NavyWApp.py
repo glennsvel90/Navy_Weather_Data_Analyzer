@@ -5,7 +5,7 @@ from datetime import date
 import NavyWDB
 
 
-class NavyWApp:
+class NavyWAPP:
     """
     This is a GUI module for the Navy Weather Data Application. The module retrieves data for
     requested date ranges from the NavyWDB module
