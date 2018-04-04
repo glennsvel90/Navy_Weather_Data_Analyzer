@@ -37,4 +37,4 @@ will use the NavyWWEB module to download the weather data for that date from the
 ## Limitations
 
 The are some varying data for the same dates. When errors did occur for the downloading of certain dates, a warning message is shown with the specific dates that
-had problems being downloaded. These dates let the user know dates that was not incorporated in the databased and thus, not included in the final result.
+had problems being downloaded. These dates let the user know dates that was not incorporated in the database and thus, not included in the final result.
