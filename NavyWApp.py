@@ -164,7 +164,7 @@ class NavyWAPP:
 
     def submit(self):
         """
-
+        Obtain the mean and median weather data parameters for the specified date range
         """
         #try to get the day, month, and year, converting those into a datetime object.
         #throw and error if actual real dates are not used as inputs, and reset the date values to
