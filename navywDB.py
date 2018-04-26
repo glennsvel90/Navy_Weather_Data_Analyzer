@@ -5,11 +5,13 @@ import NavyWWeb
 
 
 class NavyWDB():
-    """
-    Creates and manages a database that stores local cache of all weather data that's been downloaded from the internet
+    """ 
+    Create and manages a database that stores local cache of all weather data that's been 
+    downloaded from the internet.
     """
 
     def __init__(self, **kwargs):
+        """ open the database """
         self.filename = kwargs.get('filename', 'navyw.db')
         self.table = kwargs.get('table', 'weather')
 
@@ -23,10 +25,12 @@ class NavyWDB():
 
     def get_data_for_range(self, start, end):
         """
-        Using the start and end dates, returns a generator of dictionaries that have all weather data, such as Wind Speed,
-        Barometric Pressure, and Wind Speed in those dates. This funtion is called by the NavyWApp module
+        Using the start and end dates, return a generator of dictionaries that have all weather data, such as Wind Speed,
+        Barometric Pressure, and Wind Speed in those dates. 
         """
-
+        
+        #This funtion is called by the NavyWApp module.
+        
 
         dates_to_update = []
 
@@ -95,7 +99,7 @@ class NavyWDB():
     def get_status_for_range(self, start, end):
         """
         Given a start and end date, return a generator of dicts containing the dates and their corresponding status value which
-        is entered as either COMPLETE or PARTIAL
+        is entered as either COMPLETE or PARTIAL.
         """
 
         # from the multiple records of different timestamps for redunant dates between the start and end date, get one date result.
@@ -138,7 +142,7 @@ class NavyWDB():
 
 
     def clear(self):
-        """Clears the database by dropping the current table"""
+        """ Clears the database by dropping the current table. """
         self.db.execute('DROP TABLE IF EXISTS {}'.format(self.table))
 
 
