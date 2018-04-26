@@ -6,12 +6,14 @@ import NavyWDB
 
 
 class NavyWAPP:
-    """
+    """ 
     This is a GUI module for the Navy Weather Data Application. The module retrieves data for
-    requested date ranges from the NavyWDB module
+    requested date ranges from the NavyWDB module.
     """
 
     def __init__(self, master):
+        
+        """ Start the gui, database initialization, and pre-close event. """
 
         #store the tkinter top level window object as an internal variable called master
         self.master = master
@@ -22,13 +24,12 @@ class NavyWAPP:
         #create and store a database object from the NavyWDB module
         self.database = NavyWDB.NavyWDB()
 
-        #configures master to closing application event to safely close database before closing master window of gui
+        #configures master during closing application event to safely close database before closing master window of gui
         self.master.protocol("WM_DELETE_WINDOW", self._safe_close)
 
     def _makeGUI(self):
-        """
-        Initiates the graphical user interface that displays date input parameters
-        """
+        
+        """ Initiates the graphical user interface that displays date input parameters """
 
         self.master.title('Navy Weather Data Analyzer')
         self.master.resizable(False, False)
@@ -163,9 +164,8 @@ class NavyWAPP:
 
 
     def submit(self):
-        """
-        Obtain the mean and median weather data parameters for the specified date range
-        """
+        """ Obtain the mean and median weather data parameters for the specified date range """
+        
         #try to get the day, month, and year, converting those into a datetime object.
         #throw and error if actual real dates are not used as inputs, and reset the date values to
         #day of today
