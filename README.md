@@ -1,6 +1,6 @@
 # Navy_Weather_Data_Analyzer
 
-**Note:** Navy Weather Base Data Server (http://lpo.dt.navy.mil/data/DM) has gone offline, and application is unable to run. Check the github repository for sample data downloaded for experimentation. Snapshots of data are also provided for understanding data layout.
+**Note:** Navy Weather Base Data Server (http://lpo.dt.navy.mil/data/DM) has gone offline, thus application is unable to run to completion. Check the github repository for sample data downloaded for experimentation. Snapshots of data are also provided for understanding data layout.
 
 The U.S. Navy uses weather data to make informed decisions about submarine training protocols. This application helps solves the problem of Navy researchers' need for key information about the weather's air temperature, barometric pressure, and wind speed for a range of dates at a navy base research area, Lake Pend Oreille. This web application calculates and presents the mean and median of Navy weather data collected. It presents a graphical user interface to input date ranges. A sqlite3 database is initiated and data is downloaded, cached, and managed for dates requested.
 
